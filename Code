@@ -1,0 +1,93 @@
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+struct Book {
+    int id;
+    string title;
+    string author;
+    bool isAvailable;
+};
+
+class LibraryMS {
+private:
+    vector<Book> books;
+    int nextId = 1;
+
+public:
+    void addBook(string title, string author) {
+        books.push_back({nextId++, title, author, true});
+        cout << "Book added successfully!\n";
+    }
+
+    void displayBooks() {
+        if (books.empty()) {
+            cout << "No books in library.\n";
+            return;
+        }
+        for (auto& book : books) {
+            cout << "ID: " << book.id << " | " << book.title 
+                 << " by " << book.author 
+                 << " | " << (book.isAvailable ? "Available" : "Borrowed") << "\n";
+        }
+    }
+
+    void borrowBook(int id) {
+        for (auto& book : books) {
+            if (book.id == id && book.isAvailable) {
+                book.isAvailable = false;
+                cout << "Book borrowed successfully!\n";
+                return;
+            }
+        }
+        cout << "Book not available.\n";
+    }
+
+    void returnBook(int id) {
+        for (auto& book : books) {
+            if (book.id == id && !book.isAvailable) {
+                book.isAvailable = true;
+                cout << "Book returned successfully!\n";
+                return;
+            }
+        }
+        cout << "Invalid book ID.\n";
+    }
+};
+
+int main() {
+    LibraryMS library;
+    int choice;
+
+    while (true) {
+        cout << "\n1. Add Book\n2. Display Books\n3. Borrow Book\n4. Return Book\n5. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            string title, author;
+            cin.ignore();
+            cout << "Enter title: ";
+            getline(cin, title);
+            cout << "Enter author: ";
+            getline(cin, author);
+            library.addBook(title, author);
+        } else if (choice == 2) {
+            library.displayBooks();
+        } else if (choice == 3) {
+            int id;
+            cout << "Enter book ID: ";
+            cin >> id;
+            library.borrowBook(id);
+        } else if (choice == 4) {
+            int id;
+            cout << "Enter book ID: ";
+            cin >> id;
+            library.returnBook(id);
+        } else if (choice == 5) {
+            break;
+        }
+    }
+    return 0;
+}
